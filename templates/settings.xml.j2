@@ -1,0 +1,52 @@
+{{ ansible_managed | comment("xml") }}
+
+<settings>
+
+<localRepository>{{ oracle_jdbc_connector_download_dir }}/.m2</localRepository>
+
+<proxies>
+{% if oracle_jdbc_connector_http_proxy | length > 0 %}
+  <proxy>
+    <active>true</active>
+    <protocol>http</protocol>
+    <host>{{ oracle_jdbc_connector_http_proxy | urlsplit("hostname") }}</host>
+    <port>{{ oracle_jdbc_connector_http_proxy | urlsplit("port") }}</port>
+    <nonProxyHosts>{{ oracle_jdbc_connector_no_proxy }}</nonProxyHosts>
+ </proxy>
+{% endif %}
+{% if oracle_jdbc_connector_https_proxy | length > 0 %}
+   <proxy>
+     <active>true</active>
+     <protocol>https</protocol>
+     <host>{{ oracle_jdbc_connector_https_proxy | urlsplit("hostname") }}</host>
+     <port>{{ oracle_jdbc_connector_https_proxy | urlsplit("port") }}</port>
+     <nonProxyHosts>{{ oracle_jdbc_connector_no_proxy }}</nonProxyHosts>
+  </proxy>
+{% endif %}
+</proxies>
+
+<servers>
+  <server>
+    <id>maven.oracle.com</id>
+    <username>{{ oracle_jdbc_connector_user }}</username>
+    <password>{{ oracle_jdbc_connector_maven_repo_key_result.stdout }}</password>
+  <configuration>
+    <basicAuthScope>
+      <host>ANY</host>
+      <port>ANY</port>
+      <realm>OAM 11g</realm>
+    </basicAuthScope>
+    <httpConfiguration>
+      <all>
+      <params>
+        <property>
+          <name>http.protocol.allow-circular-redirects</name>
+          <value>%b,true</value>
+        </property>
+      </params>
+      </all>
+    </httpConfiguration>
+  </configuration>
+  </server>
+  </servers>
+</settings>

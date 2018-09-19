@@ -1,0 +1,17 @@
+---
+# Role cleanup tasks
+
+- block:
+    - name: remove temporary download directory
+      file:
+        path: "{{ oracle_jdbc_connector_download_dir }}"
+        state: absent
+
+    - name: remove maven wagon required by oracle repository
+      file:
+        path: "{{ oracle_jdbc_connector_maven.ext_path }}"
+        state: absent
+  when: oracle_jdbc_connector_remove_download
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::cleanup

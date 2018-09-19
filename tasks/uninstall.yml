@@ -1,0 +1,11 @@
+---
+# Role uninstall tasks
+
+- name: uninstall oracle jdbc connector
+  file:
+    path: "{{  oracle_jdbc_connector_jar_path }}"
+    state: absent
+  when: oracle_jdbc_connector_state == "absent"
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::uninstall

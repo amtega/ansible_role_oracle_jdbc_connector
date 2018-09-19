@@ -1,0 +1,79 @@
+---
+# Role download tasks
+
+- block:
+    - name: create oracle jdbc download directory
+      file:
+        path: "{{ oracle_jdbc_connector_download_dir }}"
+        state: directory
+
+    - block:
+        - name: download maven wagon required by oracle repository
+          get_url:
+            url: "{{ oracle_jdbc_connector_maven.wagon_url }}"
+            dest: "{{ oracle_jdbc_connector_maven.ext_path }}"
+          register: oracle_jdbc_connector_wagon_download_result
+
+        - name: generate maven master encrypted password
+          shell: >-
+            mvn --encrypt-master-password {{ oracle_jdbc_connector_password }}
+          changed_when: false
+          register: oracle_jdbc_connector_maven_master_key_result
+
+        - name: setup maven security settings file
+          template:
+            src: security-settings.xml.j2
+            dest: >-
+              {{ oracle_jdbc_connector_download_dir }}/security-settings.xml
+            mode: 0600
+
+        - name: encrypt oracle maven repository password
+          shell: >-
+            mvn
+            -Dsettings.security={{ oracle_jdbc_connector_download_dir
+                                   + "/security-settings.xml "
+                                   + "--encrypt-password "
+                                   + oracle_jdbc_connector_password }}
+          changed_when: false
+          register: oracle_jdbc_connector_maven_repo_key_result
+
+        - name: setup maven settings file
+          template:
+            src: settings.xml.j2
+            dest: "{{ oracle_jdbc_connector_download_dir }}/settings.xml"
+
+        - name: setup maven project file
+          template:
+            src: pom.xml.j2
+            dest: "{{ oracle_jdbc_connector_download_dir }}/pom.xml"
+
+        - name: download oracle jdbc connector from maven repository
+          shell: >-
+            mvn
+            -Dsettings.security={{ oracle_jdbc_connector_download_dir
+                                   + "/security-settings.xml "
+                                   + "-s "
+                                   + oracle_jdbc_connector_download_dir
+                                   + "/settings.xml compile" }}
+          args:
+            chdir: "{{ oracle_jdbc_connector_download_dir }}"
+          register: oracle_jdbc_connector_maven_compile_result
+      when: oracle_jdbc_connector_download_url is undefined
+
+    - name: download oracle jdbc connector from custom url
+      get_url:
+        url: "{{ oracle_jdbc_connector_download_url }}"
+        dest: "{{ oracle_jdbc_connector_download_dir }}"
+      register:  oracle_jdbc_connector_download_custom_result
+      when: oracle_jdbc_connector_download_url is defined
+
+  when:
+    - oracle_jdbc_connector_state == "present"
+    - >-
+      (oracle_jdbc_connector_jar_check_result is defined
+      and not oracle_jdbc_connector_jar_check_result.stat.exists)
+      or oracle_jdbc_connector_jar_check_result is undefined
+  environment: "{{ oracle_jdbc_connector_http_proxy_environment }}"
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::download

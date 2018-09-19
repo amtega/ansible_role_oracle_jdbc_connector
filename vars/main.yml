@@ -1,2 +1,86 @@
 ---
 # Role variables
+
+# Supported distributions
+
+oracle_jdbc_connector_supported_distributions:
+  - centos
+  - fedora
+  - rhel
+
+# Supported distributions versions
+
+oracle_jdbc_connector_supported_versions:
+  centos: 7
+  fedora: 27
+  rhel: 7
+
+# Operating system packages to install
+
+oracle_jdbc_connector_os_packages:
+  centos_7:
+    - maven
+    - python-pip
+
+  fedora_27:
+    - maven
+    - python-pip
+
+  fedora_28:
+    - maven
+    - python-pip
+
+  rhel_7:
+    - maven
+    - python-pip
+
+# Python  packages to install
+
+oracle_jdbc_connector_python_packages:
+  centos_7:
+    - pexpect
+
+  fedora_27:
+    - pexpect
+
+  fedora_28:
+    - pexpect
+
+  rhel_7:
+    - pexpect
+
+# Paths
+
+oracle_jdbc_connector_jar_filename: >-
+  {{ (oracle_jdbc_connector_download_url is defined)
+     | ternary(oracle_jdbc_connector_download_url
+               | default("/")
+               | urlsplit("path")
+               | basename,
+               "ojdbc8-"
+               + oracle_jdbc_connector_version
+               + ".jar") }}
+
+# Maven settings
+
+oracle_jdbc_connector_maven:
+  repository_url: https://maven.oracle.com
+  group_id: com.oracle.jdbc
+  artifact_id: ojdbc8
+  wagon_url: >-
+    {{ "http://central.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
+       + "wagon-http-2.8-shaded.jar" }}
+  ext_path: /usr/share/maven/lib/ext/oracle_jdbc_connector_wagon.jar
+
+# Proxy environment settings
+
+oracle_jdbc_connector_http_proxy_config:
+    http_proxy: "{{ oracle_jdbc_connector_http_proxy | default('') }}"
+    https_proxy: "{{ oracle_jdbc_connector_https_proxy | default('') }}"
+    http_no_proxy: "{{ oracle_jdbc_connector_no_proxy | default('') }}"
+
+oracle_jdbc_connector_http_proxy_environment: >-
+  {{ (oracle_jdbc_connector_http_proxy is defined
+      or oracle_jdbc_connector_https_proxy is defined
+      or oracle_jdbc_connector_no_proxy is defined)
+     | ternary(oracle_jdbc_connector_http_proxy_config, {}) }}
