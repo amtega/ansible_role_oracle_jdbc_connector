@@ -1,0 +1,10 @@
+---
+# Role facts tasks
+
+- name: setup oracle jdbc connector facts
+  set_fact:
+     oracle_jdbc_connector_jar_path: >-
+      {{ oracle_jdbc_connector_dir }}/{{ oracle_jdbc_connector_jar_filename }}
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::facts

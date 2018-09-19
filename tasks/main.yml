@@ -1,2 +1,13 @@
 ---
 # Role tasks
+
+- block:
+    - import_tasks: facts.yml
+    - import_tasks: check.yml
+    - import_tasks: packages.yml
+    - import_tasks: download.yml
+    - import_tasks: install.yml
+    - import_tasks: uninstall.yml
+    - import_tasks: cleanup.yml
+  tags:
+    - role::oracle_jdbc_connector
