@@ -52,14 +52,9 @@ oracle_jdbc_connector_python_packages:
 # Paths
 
 oracle_jdbc_connector_jar_filename: >-
-  {{ (oracle_jdbc_connector_download_url is defined)
-     | ternary(oracle_jdbc_connector_download_url
-               | default("/")
-               | urlsplit("path")
-               | basename,
-               "ojdbc8-"
-               + oracle_jdbc_connector_version
-               + ".jar") }}
+  {{ oracle_jdbc_connector_artifact.file | default('')
+     if oracle_jdbc_connector_artifact is defined
+     else "ojdbc8-" + oracle_jdbc_connector_version + ".jar" }}
 
 # Maven settings
 
@@ -71,6 +66,26 @@ oracle_jdbc_connector_maven:
     {{ "http://central.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
        + "wagon-http-2.8-shaded.jar" }}
   ext_path: /usr/share/maven/lib/ext/oracle_jdbc_connector_wagon.jar
+
+# Redistributable package
+
+oracle_jdbc_connector_maven_downloaded_jar_path: >-
+  {{ oracle_jdbc_connector_download_dest
+     + "/.m2/com/oracle/jdbc/ojdbc8"
+     + "/" + oracle_jdbc_connector_version
+     + "/"
+     + oracle_jdbc_connector_jar_filename }}
+
+oracle_jdbc_connector_artifact_downloaded_jar_path: >-
+  {{ lookup('vars',
+            'artifact_result_'
+            + oracle_jdbc_connector_artifact.id,
+            default='')['download_path'] | default('') }}
+
+oracle_jdbc_connector_package: >-
+  {{ oracle_jdbc_connector_artifact_downloaded_jar_path
+     if oracle_jdbc_connector_artifact is defined)
+     else oracle_jdbc_connector_artifact_downloaded_jar_path }}
 
 # Proxy environment settings
 

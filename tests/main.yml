@@ -39,8 +39,8 @@
   vars:
       oracle_jdbc_connector_state: present
       oracle_jdbc_connector_version: 12.2.0.1
-      oracle_jdbc_connector_dir: /root/software
-      oracle_jdbc_connector_download_dir: /root/software/oracle_jdbc_connector
+      oracle_jdbc_connector_dir: /root
+      oracle_jdbc_connector_download_dest: /root
       oracle_jdbc_connector_remove_download: true
   tasks:
     - name: check oracle connector
@@ -60,17 +60,22 @@
   tags:
     - maven
 
-- name: test oracle_jdbc_connector role with custom download url
+- name: test oracle_jdbc_connector role with custom artifact
   hosts: docker_sandbox_containers
   roles:
     - amtega.oracle_jdbc_connector
   vars:
       oracle_jdbc_connector_state: present
       oracle_jdbc_connector_version: 12.2.0.1
-      oracle_jdbc_connector_dir: /root/software
-      oracle_jdbc_connector_download_dir: /root/software/oracle_jdbc_connector
-      oracle_jdbc_connector_download_url: file:/tmp/connector.jar
-      oracle_jdbc_connector_remove_download: false
+      oracle_jdbc_connector_dir: /root
+      oracle_jdbc_connector_download_dest: /root
+      oracle_jdbc_connector_artifact:
+        id: oracle_jdbc_connector
+        type: http
+        host: "file:"
+        path: /tmp
+        file: connector.jar
+      oracle_jdbc_connector_remove_artifact: false
   tasks:
     - name: check oracle connector
       stat:
@@ -82,7 +87,7 @@
         that:
           - check_install_result.stat.exists
   tags:
-    - download_url
+    - artifact
 
 - name: test oracle_jdbc_connector role absent state
   hosts: docker_sandbox_containers
@@ -91,9 +96,14 @@
   vars:
       oracle_jdbc_connector_state: absent
       oracle_jdbc_connector_version: 12.2.0.1
-      oracle_jdbc_connector_dir: /root/software
-      oracle_jdbc_connector_download_dir: /root/software/oracle_jdbc_connector
-      oracle_jdbc_connector_download_url: file:/tmp/connector.jar
+      oracle_jdbc_connector_dir: /root
+      oracle_jdbc_connector_artifact:
+        id: oracle_jdbc_connector
+        type: http
+        host: "file:"
+        path: /tmp
+        file: connector.jar
+        dest: /root
       oracle_jdbc_connector_remove_download: true
   tasks:
     - name: check oracle connector
@@ -105,8 +115,6 @@
       assert:
         that:
           - not check_install_result.stat.exists
-  tags:
-    - download_url
 
 - name: cleanup docker sandbox
   hosts: localhost

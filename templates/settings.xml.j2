@@ -2,7 +2,7 @@
 
 <settings>
 
-<localRepository>{{ oracle_jdbc_connector_download_dir }}/.m2</localRepository>
+<localRepository>{{ oracle_jdbc_connector_download_dest }}/.m2</localRepository>
 
 <proxies>
 {% if oracle_jdbc_connector_http_proxy | length > 0 %}

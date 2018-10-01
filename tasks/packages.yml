@@ -16,6 +16,7 @@
         extra_args: "{{ oracle_jdbc_connector_pip_extra_args }}"
       loop: >-
         {{ oracle_jdbc_connector_python_packages[distro_packages_key] }}
+  when: oracle_jdbc_connector_artifact is undefined
   environment: "{{ oracle_jdbc_connector_http_proxy_environment }}"
   vars:
     distro_packages_key: >-

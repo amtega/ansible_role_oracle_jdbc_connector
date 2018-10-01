@@ -10,38 +10,40 @@ oracle_jdbc_connector_state: present
 
 oracle_jdbc_connector_version: 12.2.0.1
 
-# Where to put jdbc connector
+# Where to put jdbc connector.
 
 oracle_jdbc_connector_dir: /opt/oracle_jdbc_connector
 
-# Credentials to connect to oracle web site (necessary to download connector
-# from oracle maven repository)
+# Credentials to connect to oracle web site if the artifact will be downloaded
+# from oracle maven repository
 
 oracle_jdbc_connector_user:
 oracle_jdbc_connector_password:
 
-# Where to download oracle jdbc connector redistributable
+# Where to download oracle jdbc connector artifact. This setting will also be
+# propagated any eventual custom artifact and override the `dest` attribute of
+# the `artifact` dependant role (see below for details about custom artifact)
 
-oracle_jdbc_connector_download_dir: /tmp/oracle_jdbc_connector
+oracle_jdbc_connector_download_dest: /tmp/oracle_jdbc_connector
 
-# Remove or not downloaded redistributable after install
+# If you don't want to download oracle jdbc connector from official maven
+# repository you can configure the `oracle_jdbc_connector_artifact` variable to
+# point to a local/public repository that contains the required artifact
+#
+# Take a look to `amtega.artifact` role documentation to known about supported
+# types of artifacts, their specific settings and how to configure a proxy if
+# necessary
 
-oracle_jdbc_connector_remove_download: true
-
-# Specific url to the oracle jdbc connector jar if you don't want to download
-# from the official maven repository
-
-# oracle_jdbc_connector_download_url:
+# oracle_jdbc_connector_artifact:
 
 #
-# Extra arguments for the python pip tool to install packages
+# Extra arguments for the python pip tool to install required packages
 #
 
 oracle_jdbc_connector_pip_extra_args: "--upgrade"
 
-#
-# Proxy settings
-#
+# Proxy settings. This settings will also be propagated and override the
+# `artifact_*_proxy` attributes of the `artifact` dependant role if used.
 
 oracle_jdbc_connector_http_proxy: >-
   {{ ansible_facts.env.http_proxy | default('') }}
