@@ -84,7 +84,7 @@ oracle_jdbc_connector_artifact_downloaded_jar_path: >-
 
 oracle_jdbc_connector_package: >-
   {{ oracle_jdbc_connector_artifact_downloaded_jar_path
-     if oracle_jdbc_connector_artifact is defined)
+     if oracle_jdbc_connector_artifact is defined
      else oracle_jdbc_connector_artifact_downloaded_jar_path }}
 
 # Proxy environment settings
