@@ -9,29 +9,9 @@
 
     - name: install oracle jdbc connector
       copy:
-        src: "{{ downloaded_jar_path }}"
+        src: "{{ oracle_jdbc_connector_package }}"
         dest: "{{ oracle_jdbc_connector_dir }}"
         remote_src: yes
-      vars:
-        custom_url_downloaded_jar_path: >-
-          {{ (oracle_jdbc_connector_download_url is defined)
-             | ternary(oracle_jdbc_connector_download_dir
-                       + "/"
-                       + oracle_jdbc_connector_download_url
-                         | default("/")
-                         | urlsplit("path")
-                         | basename,
-                       "/") }}
-        maven_downloaded_jar_path: >-
-          {{ oracle_jdbc_connector_download_dir
-             + "/.m2/com/oracle/jdbc/ojdbc8"
-             + "/" + oracle_jdbc_connector_version
-             + "/"
-             + oracle_jdbc_connector_jar_filename }}
-        downloaded_jar_path: >-
-          {{ (oracle_jdbc_connector_download_url is defined)
-             | ternary(custom_url_downloaded_jar_path,
-                       maven_downloaded_jar_path) }}
   when:
     - oracle_jdbc_connector_state == "present"
     - >-
