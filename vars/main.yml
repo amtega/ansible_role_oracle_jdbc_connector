@@ -52,7 +52,7 @@ oracle_jdbc_connector_python_packages:
 # Paths
 
 oracle_jdbc_connector_jar_filename: >-
-  {{ oracle_jdbc_connector_artifact.file | default('')
+  {{ oracle_jdbc_connector_artifact.file
      if oracle_jdbc_connector_artifact is defined
      else "ojdbc8-" + oracle_jdbc_connector_version + ".jar" }}
 
@@ -80,12 +80,14 @@ oracle_jdbc_connector_artifact_downloaded_jar_path: >-
   {{ lookup('vars',
             'artifact_result_'
             + oracle_jdbc_connector_artifact.id,
-            default='')['download_path'] | default('') }}
+            default='')['download_path'] | default('')
+      if oracle_jdbc_connector_artifact is defined
+      else "" }}
 
 oracle_jdbc_connector_package: >-
   {{ oracle_jdbc_connector_artifact_downloaded_jar_path
      if oracle_jdbc_connector_artifact is defined
-     else oracle_jdbc_connector_artifact_downloaded_jar_path }}
+     else oracle_jdbc_connector_maven_downloaded_jar_path }}
 
 # Proxy environment settings
 
