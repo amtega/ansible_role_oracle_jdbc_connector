@@ -10,13 +10,15 @@
             ansible_facts.distribution_version
             is version(oracle_jdbc_connector_supported_versions[distribution],
                        ">=")
+      vars:
+        distribution: "{{ ansible_facts.distribution | lower }}"
 
-    - name: check if oracle jdbc connector is installed
-      stat:
-        path: "{{ oracle_jdbc_connector_jar_path }}"
-      register: oracle_jdbc_connector_jar_check_result
-  vars:
-    distribution: "{{ ansible_facts.distribution | lower }}"
+    - name: assert download config is valid
+      assert:
+        that:
+          - oracle_jdbc_connector_artifact is defined
+            or (oracle_jdbc_connector_user is defined
+                and oracle_jdbc_connector_password is defined)
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::check

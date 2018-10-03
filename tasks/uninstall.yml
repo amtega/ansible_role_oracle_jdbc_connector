@@ -3,9 +3,10 @@
 
 - name: uninstall oracle jdbc connector
   file:
-    path: "{{  oracle_jdbc_connector_jar_path }}"
+    path: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
     state: absent
   when: oracle_jdbc_connector_state == "absent"
+  loop: "{{ oracle_jdbc_connector_components }}"
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::uninstall

@@ -33,8 +33,7 @@ This is an example playbook:
     oracle_jdbc_connector_state: present
     oracle_jdbc_connector_version: 12.2.0.1
     oracle_jdbc_connector_dir: /root
-    oracle_jdbc_connector_download_dest: /root
-    oracle_jdbc_connector_remove_download: true      
+    oracle_jdbc_connector_download_dest: /root     
     oracle_jdbc_connector_user: acme
     oracle_jdbc_connector_password: acme
 ```

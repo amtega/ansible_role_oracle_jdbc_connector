@@ -24,11 +24,31 @@
 - name: prepare docker sandbox for testing
   hosts: docker_sandbox_containers
   tasks:
+    - name: create folder for fake jar files
+      file:
+        path: /tmp/jdbc
+        state: directory
+
     - name: create fake jar file for custom url download test
       copy:
-        dest: /tmp/connector.jar
+        dest: "/tmp/jdbc/{{ item }}.jar"
         content: "Fake file"
         force: yes
+      loop:
+        - ojdbc8
+        - ucp
+        - oraclepki
+        - osdt_cert
+        - osdt_core
+        - orai18n
+        - xdb6
+        - ons
+        - simplefan
+
+    - name: create tarball with fake jar files
+      archive:
+        path: /tmp/jdbc
+        dest: /tmp/jdbc.tar.gz
   tags:
     - sandbox
 
@@ -39,24 +59,39 @@
   vars:
       oracle_jdbc_connector_state: present
       oracle_jdbc_connector_version: 12.2.0.1
+      oracle_jdbc_connector_components:
+        - ojdbc8
+        - ucp
+        - oraclepki
+        - osdt_cert
+        - osdt_core
+        - orai18n
+        - xdb6
+        - ons
+        - simplefan
       oracle_jdbc_connector_dir: /root
       oracle_jdbc_connector_download_dest: /root
-      oracle_jdbc_connector_remove_download: true
   tasks:
-    - name: check oracle connector
+    - name: check oracle connector component
       stat:
-        path: "{{ oracle_jdbc_connector_jar_path }}"
+        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
+      loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
-    - name: check that oracle jdbc connector was installed
+    - name: check that oracle jdbc connector component was installed
       assert:
         that:
-          - check_install_result.stat.exists
+          - >-
+            check_install_result.results
+            | selectattr("stat.exists", "equalto", "false")
+            | list
+            | length == 0
 
     - name: remove deployed jar to prepare next test
       file:
-        path: "{{ oracle_jdbc_connector_jar_path }}"
+        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
         state: absent
+      loop: "{{ oracle_jdbc_connector_components }}"
   tags:
     - maven
 
@@ -74,18 +109,23 @@
         type: http
         host: "file:"
         path: /tmp
-        file: connector.jar
+        file: jdbc.tar.gz
       oracle_jdbc_connector_remove_artifact: false
   tasks:
-    - name: check oracle connector
+    - name: check oracle connector component
       stat:
-        path: "{{ oracle_jdbc_connector_jar_path }}"
+        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
+      loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
-    - name: check that oracle jdbc connector was installed
+    - name: check that oracle jdbc connector component was installed
       assert:
         that:
-          - check_install_result.stat.exists
+          - >-
+            check_install_result.results
+            | selectattr("stat.exists", "equalto", "false")
+            | list
+            | length == 0
   tags:
     - artifact
 
@@ -96,25 +136,32 @@
   vars:
       oracle_jdbc_connector_state: absent
       oracle_jdbc_connector_version: 12.2.0.1
+      oracle_jdbc_connector_components:
+        - ojdbc8
+        - ucp
+        - oraclepki
+        - osdt_cert
+        - osdt_core
+        - orai18n
+        - xdb6
+        - ons
+        - simplefan
       oracle_jdbc_connector_dir: /root
-      oracle_jdbc_connector_artifact:
-        id: oracle_jdbc_connector
-        type: http
-        host: "file:"
-        path: /tmp
-        file: connector.jar
-        dest: /root
-      oracle_jdbc_connector_remove_download: true
   tasks:
-    - name: check oracle connector
+    - name: check oracle connector component
       stat:
-        path: "{{ oracle_jdbc_connector_jar_path }}"
+        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
+      loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
     - name: check that oracle jdbc connector was uninstalled
       assert:
         that:
-          - not check_install_result.stat.exists
+          - >-
+            check_install_result.results
+            | selectattr("stat.exists", "equalto", "true")
+            | list
+            | length == 0
 
 - name: cleanup docker sandbox
   hosts: localhost
