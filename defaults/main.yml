@@ -10,21 +10,34 @@ oracle_jdbc_connector_state: present
 
 oracle_jdbc_connector_version: 12.2.0.1
 
-# Where to put jdbc connector.
+# List of components of the orace jdbc connector to deploy
+
+oracle_jdbc_connector_components:
+  - ojdbc8
+#  - ucp
+#  - oraclepki
+#  - osdt_cert
+#  - osdt_core
+#  - orai18n
+#  - xdb6
+#  - ons
+#  - simplefan
+
+# Where to put jdbc connector components.
 
 oracle_jdbc_connector_dir: /opt/oracle_jdbc_connector
 
 # Credentials to connect to oracle web site if the artifact will be downloaded
 # from oracle maven repository
 
-oracle_jdbc_connector_user:
-oracle_jdbc_connector_password:
+#oracle_jdbc_connector_user:
+#oracle_jdbc_connector_password:
 
 # Where to download oracle jdbc connector artifact. This setting will also be
 # propagated any eventual custom artifact and override the `dest` attribute of
 # the `artifact` dependant role (see below for details about custom artifact)
 
-oracle_jdbc_connector_download_dest: /tmp/oracle_jdbc_connector
+oracle_jdbc_connector_download_dest: /tmp
 
 # If you don't want to download oracle jdbc connector from official maven
 # repository you can configure the `oracle_jdbc_connector_artifact` variable to
@@ -35,6 +48,10 @@ oracle_jdbc_connector_download_dest: /tmp/oracle_jdbc_connector
 # necessary
 
 # oracle_jdbc_connector_artifact:
+
+# Remove or not downloaded artifact after install
+
+oracle_jdbc_connector_remove_artifact: true
 
 #
 # Extra arguments for the python pip tool to install required packages

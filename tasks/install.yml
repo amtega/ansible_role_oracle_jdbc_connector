@@ -7,17 +7,51 @@
         path: "{{ oracle_jdbc_connector_dir }}"
         state: directory
 
-    - name: install oracle jdbc connector
+    - name: extract oracle jdbc connector artifact
+      unarchive:
+        src: "{{ oracle_jdbc_connector_artifact_path }}"
+        dest: "{{ oracle_jdbc_connector_download_dest }}"
+        copy: no
+        list_files: yes
+      register: oracle_jdbc_connector_unarchive_result
+      when:
+        - oracle_jdbc_connector_artifact is defined
+        - oracle_jdbc_connector_install_required
+
+    - name: install oracle jdbc connector component
       copy:
-        src: "{{ oracle_jdbc_connector_package }}"
-        dest: "{{ oracle_jdbc_connector_dir }}"
+        src: "{{ jar_path }}"
+        dest: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
         remote_src: yes
+      loop: "{{ oracle_jdbc_connector_components }}"
+      vars:
+        maven_jar_path: >-
+          {{ oracle_jdbc_connector_download_dest
+             + "/.m2/com/oracle/jdbc/"
+             + item
+             + "/"
+             + oracle_jdbc_connector_version
+             + "/"
+             + item
+             + "-"
+             + oracle_jdbc_connector_version
+             + ".jar"
+             if oracle_jdbc_connector_artifact is undefined
+             else "" }}
+        artifact_jar_path: >-
+          {{ oracle_jdbc_connector_artifact_unarchive_dir
+             + "/"
+             + item
+             + ".jar"
+             if oracle_jdbc_connector_artifact is defined
+             else "" }}
+        jar_path: >-
+          {{ artifact_jar_path
+             if oracle_jdbc_connector_artifact is defined
+             else maven_jar_path }}
   when:
     - oracle_jdbc_connector_state == "present"
-    - >-
-      (oracle_jdbc_connector_jar_check_result is defined
-      and not oracle_jdbc_connector_jar_check_result.stat.exists)
-      or oracle_jdbc_connector_jar_check_result is undefined
+    - oracle_jdbc_connector_install_required
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::install

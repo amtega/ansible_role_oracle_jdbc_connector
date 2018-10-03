@@ -5,8 +5,8 @@
     - block:
         - name: download maven wagon required by oracle repository
           get_url:
-            url: "{{ oracle_jdbc_connector_maven.wagon_url }}"
-            dest: "{{ oracle_jdbc_connector_maven.ext_path }}"
+            url: "{{ oracle_jdbc_connector_maven_wagon_url }}"
+            dest: "{{ oracle_jdbc_connector_maven_ext_path }}"
           register: oracle_jdbc_connector_wagon_download_result
 
         - name: generate maven master encrypted password
@@ -53,25 +53,24 @@
           args:
             chdir: "{{ oracle_jdbc_connector_download_dest }}"
           register: oracle_jdbc_connector_maven_compile_result
-      when:
-        - oracle_jdbc_connector_artifact is undefined
-        - not oracle_jdbc_connector_jar_check_result.stat.exists
+      when: oracle_jdbc_connector_artifact is undefined
 
-    - name: download mysql jdbc connector artifact
+    - name: download oracle jdbc connector artifact
       include_role:
         name: amtega.artifact
       vars:
         override:
           dest: "{{ oracle_jdbc_connector_download_dest }}"
-          download: >-
-            {{ not oracle_jdbc_connector_jar_check_result.stat.exists }}
+          download: "{{ oracle_jdbc_connector_install_required }}"
         artifact: >-
           {{ oracle_jdbc_connector_artifact | combine(override) }}
         artifact_http_proxy: "{{ oracle_jdbc_connector_http_proxy }}"
         artifact_https_proxy: "{{ oracle_jdbc_connector_https_proxy }}"
         artifact_no_proxy: "{{ oracle_jdbc_connector_no_proxy }}"
       when: oracle_jdbc_connector_artifact is defined
-  when: oracle_jdbc_connector_state == "present"
+  when:
+    - oracle_jdbc_connector_state == "present"
+    - oracle_jdbc_connector_install_required
   environment: "{{ oracle_jdbc_connector_http_proxy_environment }}"
   tags:
     - role::oracle_jdbc_connector

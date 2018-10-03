@@ -9,11 +9,13 @@
 <artifactId>oracle_java_connector</artifactId>
 <version>{{ oracle_jdbc_connector_version }}</version>
 <dependencies>
+{% for component in oracle_jdbc_connector_components %}
   <dependency>
-    <groupId>{{ oracle_jdbc_connector_maven.group_id }}</groupId>
-    <artifactId>{{ oracle_jdbc_connector_maven.artifact_id }}</artifactId>
+    <groupId>{{ oracle_jdbc_connector_maven_group_id }}</groupId>
+    <artifactId>{{ component }}</artifactId>
     <version>{{ oracle_jdbc_connector_version }}</version>
   </dependency>
+{% endfor %}
 </dependencies>
 <repositories>
   <repository>

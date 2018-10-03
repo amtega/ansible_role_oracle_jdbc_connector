@@ -49,45 +49,32 @@ oracle_jdbc_connector_python_packages:
   rhel_7:
     - pexpect
 
-# Paths
-
-oracle_jdbc_connector_jar_filename: >-
-  {{ oracle_jdbc_connector_artifact.file
-     if oracle_jdbc_connector_artifact is defined
-     else "ojdbc8-" + oracle_jdbc_connector_version + ".jar" }}
-
 # Maven settings
 
-oracle_jdbc_connector_maven:
-  repository_url: https://maven.oracle.com
-  group_id: com.oracle.jdbc
-  artifact_id: ojdbc8
-  wagon_url: >-
-    {{ "http://central.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
-       + "wagon-http-2.8-shaded.jar" }}
-  ext_path: /usr/share/maven/lib/ext/oracle_jdbc_connector_wagon.jar
+oracle_jdbc_connector_maven_url: https://maven.oracle.com
+oracle_jdbc_connector_maven_group_id: com.oracle.jdbc
+oracle_jdbc_connector_maven_wagon_url: >-
+  {{ "http://central.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
+     + "wagon-http-2.8-shaded.jar" }}
+oracle_jdbc_connector_maven_ext_path: >-
+  /usr/share/maven/lib/ext/oracle_jdbc_connector_wagon.jar
 
-# Redistributable package
+# Downloaded paths
 
-oracle_jdbc_connector_maven_downloaded_jar_path: >-
-  {{ oracle_jdbc_connector_download_dest
-     + "/.m2/com/oracle/jdbc/ojdbc8"
-     + "/" + oracle_jdbc_connector_version
+oracle_jdbc_connector_artifact_unarchive_dir: >-
+  {{ oracle_jdbc_connector_unarchive_result.dest
      + "/"
-     + oracle_jdbc_connector_jar_filename }}
+     + oracle_jdbc_connector_unarchive_result.files
+       | select("search", "ojdbc.\.jar")
+       | first
+       | dirname
+     if oracle_jdbc_connector_artifact is defined
+     else "" }}
 
-oracle_jdbc_connector_artifact_downloaded_jar_path: >-
+oracle_jdbc_connector_artifact_path: >-
   {{ lookup('vars',
             'artifact_result_'
-            + oracle_jdbc_connector_artifact.id,
-            default='')['download_path'] | default('')
-      if oracle_jdbc_connector_artifact is defined
-      else "" }}
-
-oracle_jdbc_connector_package: >-
-  {{ oracle_jdbc_connector_artifact_downloaded_jar_path
-     if oracle_jdbc_connector_artifact is defined
-     else oracle_jdbc_connector_maven_downloaded_jar_path }}
+            + oracle_jdbc_connector_artifact.id)['download_path'] }}
 
 # Proxy environment settings
 
