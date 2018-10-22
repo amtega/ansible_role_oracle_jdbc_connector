@@ -2,6 +2,7 @@
 # Role dependencies
 
 galaxy_info:
+  role_name: oracle_jdbc_connector
   author: Juan Antonio Valiño García
   description: Setup Oracle JDBC connector
   company: AMTEGA - Xunta de Galicia
