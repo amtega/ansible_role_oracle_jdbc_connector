@@ -23,7 +23,8 @@
           {{ oracle_jdbc_connector_jar_check_result.results
              | selectattr("stat.exists", "equalto", false)
              | list
-             | length > 0 }}
+             | length > 0
+             and oracle_jdbc_connector_state == "present" }}
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::facts
