@@ -30,8 +30,8 @@ oracle_jdbc_connector_dir: /opt/oracle_jdbc_connector
 # Credentials to connect to oracle web site if the artifact will be downloaded
 # from oracle maven repository
 
-#oracle_jdbc_connector_user:
-#oracle_jdbc_connector_password:
+oracle_jdbc_connector_user:
+oracle_jdbc_connector_password:
 
 # Where to download oracle jdbc connector artifact. This setting will also be
 # propagated any eventual custom artifact and override the `dest` attribute of
@@ -47,7 +47,7 @@ oracle_jdbc_connector_download_dest: /tmp
 # types of artifacts, their specific settings and how to configure a proxy if
 # necessary
 
-# oracle_jdbc_connector_artifact:
+oracle_jdbc_connector_artifact:
 
 # Remove or not downloaded artifact after install
 

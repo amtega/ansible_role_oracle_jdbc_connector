@@ -15,7 +15,7 @@
         list_files: yes
       register: oracle_jdbc_connector_unarchive_result
       when:
-        - oracle_jdbc_connector_artifact is defined
+        - oracle_jdbc_connector_artifact is not none
         - oracle_jdbc_connector_install_required
 
     - name: install oracle jdbc connector component
@@ -36,18 +36,18 @@
              + "-"
              + oracle_jdbc_connector_version
              + ".jar"
-             if oracle_jdbc_connector_artifact is undefined
+             if oracle_jdbc_connector_artifact is none
              else "" }}
         artifact_jar_path: >-
           {{ oracle_jdbc_connector_artifact_unarchive_dir
              + "/"
              + item
              + ".jar"
-             if oracle_jdbc_connector_artifact is defined
+             if oracle_jdbc_connector_artifact is not none
              else "" }}
         jar_path: >-
           {{ artifact_jar_path
-             if oracle_jdbc_connector_artifact is defined
+             if oracle_jdbc_connector_artifact is not none
              else maven_jar_path }}
   when:
     - oracle_jdbc_connector_state == "present"

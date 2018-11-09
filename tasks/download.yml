@@ -53,7 +53,7 @@
           args:
             chdir: "{{ oracle_jdbc_connector_download_dest }}"
           register: oracle_jdbc_connector_maven_compile_result
-      when: oracle_jdbc_connector_artifact is undefined
+      when: oracle_jdbc_connector_artifact is none
 
     - name: download oracle jdbc connector artifact
       include_role:
@@ -67,7 +67,7 @@
         artifact_http_proxy: "{{ oracle_jdbc_connector_http_proxy }}"
         artifact_https_proxy: "{{ oracle_jdbc_connector_https_proxy }}"
         artifact_no_proxy: "{{ oracle_jdbc_connector_no_proxy }}"
-      when: oracle_jdbc_connector_artifact is defined
+      when: oracle_jdbc_connector_artifact is not none
   when:
     - oracle_jdbc_connector_state == "present"
     - oracle_jdbc_connector_install_required

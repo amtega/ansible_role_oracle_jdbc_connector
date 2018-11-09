@@ -26,3 +26,4 @@ dependencies:
     when:
       - ansible_facts.distribution | lower in ['centos', 'rhel']
       - ansible_facts.distribution_version is version("6", ">=")
+      - oracle_jdbc_connector_artifact is none
