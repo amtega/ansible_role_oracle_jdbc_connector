@@ -13,7 +13,7 @@
           file:
             path: "{{ oracle_jdbc_connector_maven_ext_path }}"
             state: absent
-      when: oracle_jdbc_connector_artifact is undefined
+      when: oracle_jdbc_connector_artifact is none
 
     - block:
         - name: remove oracle jdbc connector unarchive directory
@@ -27,7 +27,7 @@
             state: absent
           when: oracle_jdbc_connector_remove_artifact
       when:
-        - oracle_jdbc_connector_artifact is defined
+        - oracle_jdbc_connector_artifact is not none
         - oracle_jdbc_connector_install_required
   tags:
     - role::oracle_jdbc_connector

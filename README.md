@@ -16,7 +16,10 @@ The role setups the following facts:
 
 ## Dependencies
 
-- [amtega.epel](https://galaxy.ansible.com/amtega/epel) amtega.epel in RHEL/CentOS.
+- [amtega.check_platform](https://galaxy.ansible.com/amtega/check_platform)
+- [amtega.proxy_client](https://galaxy.ansible.com/amtega/proxy_client). If you need internet access to download packages fill this role variables.
+- [amtega.packages](https://galaxy.ansible.com/amtega/packages)
+- [amtega.epel](https://galaxy.ansible.com/amtega/epel) if distribution is CentOS or RHEL.
 - [amtega.artifact](https://galaxy.ansible.com/amtega/artifact) amtega.artifact if download is customized.
 
 ## Example Playbook
@@ -25,7 +28,7 @@ This is an example playbook:
 
 ``` yaml
 ---
-- name: msyql_jdpc_connector role sample
+- name: msyql_jdbc_connector role sample
   hosts: localhost
   roles:  
     - amtega.oracle_jdbc_connector

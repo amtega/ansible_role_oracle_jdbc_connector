@@ -2,23 +2,12 @@
 # Role check tasks
 
 - block:
-    - name: assert platform is supported
-      assert:
-        that:
-          - distribution in oracle_jdbc_connector_supported_distributions
-          - >-
-            ansible_facts.distribution_version
-            is version(oracle_jdbc_connector_supported_versions[distribution],
-                       ">=")
-      vars:
-        distribution: "{{ ansible_facts.distribution | lower }}"
-
     - name: assert download config is valid
       assert:
         that:
-          - oracle_jdbc_connector_artifact is defined
-            or (oracle_jdbc_connector_user is defined
-                and oracle_jdbc_connector_password is defined)
+          - oracle_jdbc_connector_artifact is none
+            or (oracle_jdbc_connector_user is not none
+                and oracle_jdbc_connector_password is not none)
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::check

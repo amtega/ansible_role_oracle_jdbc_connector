@@ -1,54 +1,6 @@
 ---
 # Role variables
 
-# Supported distributions
-
-oracle_jdbc_connector_supported_distributions:
-  - centos
-  - fedora
-  - rhel
-
-# Supported distributions versions
-
-oracle_jdbc_connector_supported_versions:
-  centos: 7
-  fedora: 27
-  rhel: 7
-
-# Operating system packages to install
-
-oracle_jdbc_connector_os_packages:
-  centos_7:
-    - maven
-    - python-pip
-
-  fedora_27:
-    - maven
-    - python-pip
-
-  fedora_28:
-    - maven
-    - python-pip
-
-  rhel_7:
-    - maven
-    - python-pip
-
-# Python  packages to install
-
-oracle_jdbc_connector_python_packages:
-  centos_7:
-    - pexpect
-
-  fedora_27:
-    - pexpect
-
-  fedora_28:
-    - pexpect
-
-  rhel_7:
-    - pexpect
-
 # Maven settings
 
 oracle_jdbc_connector_maven_url: https://maven.oracle.com
@@ -68,23 +20,10 @@ oracle_jdbc_connector_artifact_unarchive_dir: >-
        | select("search", "ojdbc.\.jar")
        | first
        | dirname
-     if oracle_jdbc_connector_artifact is defined
+     if oracle_jdbc_connector_artifact is not none
      else "" }}
 
 oracle_jdbc_connector_artifact_path: >-
   {{ lookup('vars',
             'artifact_result_'
             + oracle_jdbc_connector_artifact.id)['download_path'] }}
-
-# Proxy environment settings
-
-oracle_jdbc_connector_http_proxy_config:
-    http_proxy: "{{ oracle_jdbc_connector_http_proxy | default('') }}"
-    https_proxy: "{{ oracle_jdbc_connector_https_proxy | default('') }}"
-    http_no_proxy: "{{ oracle_jdbc_connector_no_proxy | default('') }}"
-
-oracle_jdbc_connector_http_proxy_environment: >-
-  {{ (oracle_jdbc_connector_http_proxy is defined
-      or oracle_jdbc_connector_https_proxy is defined
-      or oracle_jdbc_connector_no_proxy is defined)
-     | ternary(oracle_jdbc_connector_http_proxy_config, {}) }}
