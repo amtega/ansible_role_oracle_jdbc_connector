@@ -71,7 +71,7 @@
   when:
     - oracle_jdbc_connector_state == "present"
     - oracle_jdbc_connector_install_required
-  environment: "{{ oracle_jdbc_connector_http_proxy_environment }}"
+  environment: "{{ proxy_client_environment }}"
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::download

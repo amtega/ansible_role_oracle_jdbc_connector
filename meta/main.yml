@@ -22,8 +22,28 @@ galaxy_info:
     - jdbc
 
 dependencies:
+  - role: amtega.check_platform
+    check_platform_distributions:
+      centos: 7
+      fedora: 27
+      rhel: 7
+
+  - role: amtega.proxy_client
+    proxy_client_permanent: false
+
   - role: amtega.epel
     when:
       - ansible_facts.distribution | lower in ['centos', 'rhel']
       - ansible_facts.distribution_version is version("6", ">=")
       - oracle_jdbc_connector_artifact is none
+
+  - role: amtega.packages
+    packages_os:
+      all:
+        all:
+          maven: present
+          python-pip: present
+    packages_python:
+      all:
+        all:
+          pexpect: present
