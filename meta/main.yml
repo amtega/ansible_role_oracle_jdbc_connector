@@ -9,13 +9,13 @@ galaxy_info:
   license: GPLv3 or EUPL
   min_ansible_version: 2.7
   platforms:
-  - name: Fedora
-    versions:
-      - 27
-      - 28
-  - name: EL
-    versions:
-      - 7
+    - name: EL
+      versions:
+        - 7
+    - name: Fedora
+      versions:
+        - 27
+        - 28
   galaxy_tags:
     - java
     - oracle
@@ -29,7 +29,7 @@ dependencies:
       rhel: 7
 
   - role: amtega.proxy_client
-    proxy_client_permanent: false
+    proxy_client_permanent: no
 
   - role: amtega.epel
     when:
