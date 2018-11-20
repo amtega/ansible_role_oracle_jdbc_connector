@@ -17,7 +17,6 @@ The role setups the following facts:
 ## Dependencies
 
 - [amtega.check_platform](https://galaxy.ansible.com/amtega/check_platform)
-- [amtega.proxy_client](https://galaxy.ansible.com/amtega/proxy_client). If you need internet access to download packages fill this role variables.
 - [amtega.packages](https://galaxy.ansible.com/amtega/packages)
 - [amtega.epel](https://galaxy.ansible.com/amtega/epel) if distribution is CentOS or RHEL.
 - [amtega.artifact](https://galaxy.ansible.com/amtega/artifact) amtega.artifact if download is customized.
