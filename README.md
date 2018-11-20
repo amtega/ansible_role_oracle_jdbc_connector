@@ -48,7 +48,7 @@ To run test you need to provide a registered user/password form the Oracle web s
 
 ```shell
 $ cd amtega.oracle_jdbc_connector/tests
-$ ansible-playbook main.yml -i inventory -i ~/mycustominventory.yml --vaul-id myvault@prompt
+$ ansible-playbook main.yml -i inventory -i ~/mycustominventory.yml --vault-id myvault@prompt
 ```
 
 ## License
