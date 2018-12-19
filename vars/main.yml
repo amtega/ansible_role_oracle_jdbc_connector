@@ -24,6 +24,5 @@ oracle_jdbc_connector_artifact_unarchive_dir: >-
      else "" }}
 
 oracle_jdbc_connector_artifact_path: >-
-  {{ lookup('vars',
-            'artifact_result_'
-            + oracle_jdbc_connector_artifact.id)['download_path'] }}
+  {{ artifact_result[oracle_jdbc_connector_artifact.id].download_path
+     | default('') }}
