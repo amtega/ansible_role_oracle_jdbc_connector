@@ -2,7 +2,7 @@
 # Role check tasks
 
 - block:
-    - name: assert download config is valid
+    - name: Assert download config is valid
       assert:
         that:
           - oracle_jdbc_connector_artifact is not none

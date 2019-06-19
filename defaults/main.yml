@@ -51,7 +51,7 @@ oracle_jdbc_connector_artifact:
 
 # Remove or not downloaded artifact after install
 
-oracle_jdbc_connector_remove_artifact: true
+oracle_jdbc_connector_remove_artifact: yes
 
 #
 # Extra arguments for the python pip tool to install required packages
