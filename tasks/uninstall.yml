@@ -1,7 +1,7 @@
 ---
 # Role uninstall tasks
 
-- name: uninstall oracle jdbc connector
+- name: Uninstall oracle jdbc connector
   file:
     path: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
     state: absent

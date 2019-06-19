@@ -1,35 +1,37 @@
 ---
 # Tasks for testing role
 
-- name: configure docker sandbox environment
+- name: Configure docker sandbox environment
   hosts: localhost
   roles:
     - role: amtega.docker_presets
-      docker_presets_images_json_query: >-
-        [? starts_with(name, `centos-7`)
-           || starts_with(name, `fedora-27`)
-           || starts_with(name, `fedora-28`) ]
+      vars:
+        docker_presets_images_json_query: >-
+          [? starts_with(name, `centos-7`)
+             || starts_with(name, `fedora-29`)
+             || starts_with(name, `fedora-30`) ]
   tags:
     - sandbox
 
-- name: setup docker sandbox for testing
+- name: Setup docker sandbox for testing
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox
-      docker_sandbox_state: started
-      docker_sandbox_idempotence_test: false
+      vars:
+        docker_sandbox_state: started
+        docker_sandbox_idempotence_test: no
   tags:
     - sandbox
 
-- name: prepare docker sandbox for testing
+- name: Prepare docker sandbox for testing
   hosts: docker_sandbox_containers
   tasks:
-    - name: create folder for fake jar files
+    - name: Create folder for fake jar files
       file:
         path: /tmp/jdbc
         state: directory
 
-    - name: create fake jar file for custom url download test
+    - name: Create fake jar file for custom url download test
       copy:
         dest: "/tmp/jdbc/{{ item }}.jar"
         content: "Fake file"
@@ -45,14 +47,14 @@
         - ons
         - simplefan
 
-    - name: create tarball with fake jar files
+    - name: Create tarball with fake jar files
       archive:
         path: /tmp/jdbc
         dest: /tmp/jdbc.tar.gz
   tags:
     - sandbox
 
-- name: test oracle_jdbc_connector role with maven download
+- name: Test oracle_jdbc_connector role with maven download
   hosts: docker_sandbox_containers
   roles:
     - amtega.oracle_jdbc_connector
@@ -72,13 +74,13 @@
       oracle_jdbc_connector_dir: /root
       oracle_jdbc_connector_download_dest: /root
   tasks:
-    - name: check oracle connector component
+    - name: Check oracle connector component
       stat:
         path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
       loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
-    - name: check that oracle jdbc connector component was installed
+    - name: Check that oracle jdbc connector component was installed
       assert:
         that:
           - >-
@@ -87,7 +89,7 @@
             | list
             | length == 0
 
-    - name: remove deployed jar to prepare next test
+    - name: Remove deployed jar to prepare next test
       file:
         path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
         state: absent
@@ -95,7 +97,7 @@
   tags:
     - maven
 
-- name: test oracle_jdbc_connector role with custom artifact
+- name: Test oracle_jdbc_connector role with custom artifact
   hosts: docker_sandbox_containers
   roles:
     - amtega.oracle_jdbc_connector
@@ -110,15 +112,15 @@
         host: "file:"
         path: /tmp
         file: jdbc.tar.gz
-      oracle_jdbc_connector_remove_artifact: false
+      oracle_jdbc_connector_remove_artifact: no
   tasks:
-    - name: check oracle connector component
+    - name: Check oracle connector component
       stat:
         path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
       loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
-    - name: check that oracle jdbc connector component was installed
+    - name: Check that oracle jdbc connector component was installed
       assert:
         that:
           - >-
@@ -129,7 +131,7 @@
   tags:
     - artifact
 
-- name: test oracle_jdbc_connector role absent state
+- name: Test oracle_jdbc_connector role absent state
   hosts: docker_sandbox_containers
   roles:
     - amtega.oracle_jdbc_connector
@@ -148,13 +150,13 @@
         - simplefan
       oracle_jdbc_connector_dir: /root
   tasks:
-    - name: check oracle connector component
+    - name: Check oracle connector component
       stat:
         path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
       loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
-    - name: check that oracle jdbc connector was uninstalled
+    - name: Check that oracle jdbc connector was uninstalled
       assert:
         that:
           - >-
@@ -163,10 +165,11 @@
             | list
             | length == 0
 
-- name: cleanup docker sandbox
+- name: Cleanup docker sandbox
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox
-      docker_sandbox_state: absent
+      vars:
+        docker_sandbox_state: absent
   tags:
     - sandbox

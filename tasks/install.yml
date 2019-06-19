@@ -2,12 +2,12 @@
 # Role install tasks
 
 - block:
-    - name: create oracle jdbc connector destination directory
+    - name: Create oracle jdbc connector destination directory
       file:
         path: "{{ oracle_jdbc_connector_dir }}"
         state: directory
 
-    - name: extract oracle jdbc connector artifact
+    - name: Extract oracle jdbc connector artifact
       unarchive:
         src: "{{ oracle_jdbc_connector_artifact_path }}"
         dest: "{{ oracle_jdbc_connector_download_dest }}"
@@ -16,9 +16,9 @@
       register: oracle_jdbc_connector_unarchive_result
       when:
         - oracle_jdbc_connector_artifact is not none
-        - oracle_jdbc_connector_install_required
+        - oracle_jdbc_connector_install_required | bool
 
-    - name: install oracle jdbc connector component
+    - name: Install oracle jdbc connector component
       copy:
         src: "{{ jar_path }}"
         dest: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
@@ -51,7 +51,7 @@
              else maven_jar_path }}
   when:
     - oracle_jdbc_connector_state == "present"
-    - oracle_jdbc_connector_install_required
+    - oracle_jdbc_connector_install_required | bool
   tags:
     - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::install

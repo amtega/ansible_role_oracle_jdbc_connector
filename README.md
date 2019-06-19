@@ -2,10 +2,6 @@
 
 This is an [Ansible](http://www.ansible.com) role to deploy Oracle JDBC connector.
 
-## Requirements
-
-[Ansible 2.6+](http://docs.ansible.com/ansible/latest/intro_installation.html)
-
 ## Role Variables
 
 A list of all the default variables for this role is available in `defaults/main.yml`.
@@ -13,13 +9,6 @@ A list of all the default variables for this role is available in `defaults/main
 The role setups the following facts:
 
 - oracle_jdbc_connector_jar_path: full path to the deployed jar with the connector.
-
-## Dependencies
-
-- [amtega.check_platform](https://galaxy.ansible.com/amtega/check_platform)
-- [amtega.packages](https://galaxy.ansible.com/amtega/packages)
-- [amtega.epel](https://galaxy.ansible.com/amtega/epel) if distribution is CentOS or RHEL.
-- [amtega.artifact](https://galaxy.ansible.com/amtega/artifact) amtega.artifact if download is customized.
 
 ## Example Playbook
 
@@ -53,7 +42,7 @@ $ ansible-playbook main.yml -i inventory -i ~/mycustominventory.yml --vault-id m
 
 ## License
 
-Copyright (C) 2018 AMTEGA - Xunta de Galicia
+Copyright (C) 2019 AMTEGA - Xunta de Galicia
 
 This role is free software: you can redistribute it and/or modify it under the terms of:
 

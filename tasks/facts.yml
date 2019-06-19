@@ -2,7 +2,7 @@
 # Role facts tasks
 
 - block:
-    - name: setup oracle jdbc connector components path facts
+    - name: Setup oracle jdbc connector components path facts
       set_fact:
          "oracle_jdbc_connector_{{ item }}_jar_path": >-
           {{ oracle_jdbc_connector_dir }}/{{ item }}.jar
@@ -10,14 +10,14 @@
       loop_control:
         label: "oracle_jdbc_connector_{{ item }}_jar_path"
 
-    - name: check if oracle jdbc connector components are installed
+    - name: Check if oracle jdbc connector components are installed
       stat:
         path: >-
           {{ lookup("vars", "oracle_jdbc_connector_" + item + "_jar_path") }}
       register: oracle_jdbc_connector_jar_check_result
       loop: "{{ oracle_jdbc_connector_components }}"
 
-    - name: setup fact indicating if install is required
+    - name: Setup fact indicating if install is required
       set_fact:
         oracle_jdbc_connector_install_required: >-
           {{ oracle_jdbc_connector_jar_check_result.results
