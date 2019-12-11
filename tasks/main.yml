@@ -1,6 +1,32 @@
 ---
 # Role tasks
 
+- include_role:
+    name: amtega.check_platform
+  vars:
+    check_platform_distributions:
+      centos: 7
+      fedora: 29
+      rhel: 7
+
+- include_role:
+    name: amtega.epel
+  when: oracle_jdbc_connector_artifact is none
+
+- include_role:
+    name: amtega.packages
+  vars:
+    packages_os:
+      all:
+        all:
+          maven: present
+          python-pip: present
+    packages_python:
+      all:
+        all:
+          pexpect: present
+  when: oracle_jdbc_connector_artifact is none
+
 - block:
     - import_tasks: facts.yml
     - import_tasks: check.yml
