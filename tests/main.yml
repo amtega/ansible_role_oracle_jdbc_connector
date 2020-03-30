@@ -1,7 +1,7 @@
 ---
 # Tasks for testing role
 
-- name: Configure docker sandbox environment
+- name: Configure sandbox environment
   hosts: localhost
   roles:
     - role: amtega.docker_presets
@@ -165,7 +165,7 @@
             | list
             | length == 0
 
-- name: Cleanup docker sandbox
+- name: Cleanup testing sandbox
   hosts: localhost
   roles:
     - role: amtega.docker_sandbox
