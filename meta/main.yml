@@ -7,7 +7,7 @@ galaxy_info:
   description: Setup Oracle JDBC connector
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.8
+  min_ansible_version: 2.9
   platforms:
     - name: EL
       versions:
@@ -23,13 +23,24 @@ galaxy_info:
 
 dependencies:
   - role: amtega.check_platform
-    tags:
-      - never
+    vars:
+      check_platform_distributions:
+        centos: 7
+        fedora: 29
+        rhel: 7
 
   - role: amtega.epel
-    tags:
-      - never
+    when: oracle_jdbc_connector_artifact is none
 
   - role: amtega.packages
-    tags:
-      - never
+    vars:
+      packages_os:
+        all:
+          all:
+            maven: present
+            python-pip: present
+      packages_python:
+        all:
+          all:
+            pexpect: present
+    when: oracle_jdbc_connector_artifact is none
