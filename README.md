@@ -16,8 +16,7 @@ This is an example playbook:
 
 ``` yaml
 ---
-- name: msyql_jdbc_connector role sample
-  hosts: localhost
+- hosts: localhost
   roles:  
     - amtega.oracle_jdbc_connector
   vars:    
