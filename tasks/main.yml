@@ -2,11 +2,28 @@
 # Role tasks
 
 - block:
-    - import_tasks: facts.yml
-    - import_tasks: check.yml
-    - import_tasks: download.yml
-    - import_tasks: install.yml
-    - import_tasks: uninstall.yml
-    - import_tasks: cleanup.yml
+    - include_tasks: search.yml
+
+    - include_tasks: check.yml
+
+    - include_tasks: install.yml
+      when:
+        - oracle_jdbc_connector_state == "present"
+        - oracle_jdbc_connector_install_required | bool
+      tags:
+        - role::oracle_jdbc_connector::install
+
+    - include_tasks: uninstall.yml
+      when: oracle_jdbc_connector_state == "absent"
+      tags:
+        - role::oracle_jdbc_connector::uninstall
+
+    - include_tasks: cleanup.yml
+      tags:
+        - role::oracle_jdbc_connector::cleanup
+
+    - include_tasks: facts.yml
+      tags:
+        - role::oracle_jdbc_connector::facts
   tags:
     - role::oracle_jdbc_connector

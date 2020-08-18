@@ -2,56 +2,22 @@
 # Role install tasks
 
 - block:
+    - include_tasks: download.yml
+
     - name: Create oracle jdbc connector destination directory
       file:
         path: "{{ oracle_jdbc_connector_dir }}"
         state: directory
 
-    - name: Extract oracle jdbc connector artifact
-      unarchive:
-        src: "{{ oracle_jdbc_connector_artifact_path }}"
-        dest: "{{ oracle_jdbc_connector_download_dest }}"
-        copy: no
-        list_files: yes
-      register: oracle_jdbc_connector_unarchive_result
-      when:
-        - oracle_jdbc_connector_artifact is not none
-        - oracle_jdbc_connector_install_required | bool
-
     - name: Install oracle jdbc connector component
       copy:
-        src: "{{ jar_path }}"
-        dest: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
+        src: "{{ oracle_jdbc_connector_item.src }}"
+        dest: "{{ oracle_jdbc_connector_item.dest }}"
         remote_src: yes
-      loop: "{{ oracle_jdbc_connector_components }}"
-      vars:
-        maven_jar_path: >-
-          {{ oracle_jdbc_connector_download_dest
-             + "/.m2/com/oracle/jdbc/"
-             + item
-             + "/"
-             + oracle_jdbc_connector_version
-             + "/"
-             + item
-             + "-"
-             + oracle_jdbc_connector_version
-             + ".jar"
-             if oracle_jdbc_connector_artifact is none
-             else "" }}
-        artifact_jar_path: >-
-          {{ oracle_jdbc_connector_artifact_unarchive_dir
-             + "/"
-             + item
-             + ".jar"
-             if oracle_jdbc_connector_artifact is not none
-             else "" }}
-        jar_path: >-
-          {{ artifact_jar_path
-             if oracle_jdbc_connector_artifact is not none
-             else maven_jar_path }}
-  when:
-    - oracle_jdbc_connector_state == "present"
-    - oracle_jdbc_connector_install_required | bool
+      register: oracle_jdbc_connector_install_result
+      loop: "{{ lookup('template', 'components.yml.j2') | from_yaml }}"
+      loop_control:
+        loop_var: oracle_jdbc_connector_item
+        label: "{{ oracle_jdbc_connector_item.dest }}"
   tags:
-    - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::install

@@ -1,0 +1,11 @@
+---
+# Search installed connectors tasks
+
+- name: Search installed oracle jdbc connectors
+  find:
+    paths: "{{ oracle_jdbc_connector_dir }}"
+    file_type: file
+    patterns: "{{ oracle_jdbc_connector_components_regex }}"
+    recurse: no
+    use_regex: yes
+  register:  oracle_jdbc_connector_search_result
