@@ -5,8 +5,7 @@
 
 oracle_jdbc_connector_state: present
 
-# Version of the oracle jdbc connector to deploy. You can use the keyword latest
-# to install the latest available version
+# Version of the oracle jdbc connector to deploy.
 
 oracle_jdbc_connector_version: 12.2.0.1
 
@@ -48,10 +47,6 @@ oracle_jdbc_connector_download_dest: /tmp
 # necessary
 
 oracle_jdbc_connector_artifact:
-
-# Remove or not downloaded artifact after install
-
-oracle_jdbc_connector_remove_artifact: yes
 
 #
 # Extra arguments for the python pip tool to install required packages

@@ -1,0 +1,20 @@
+---
+
+- name: Verify
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Check oracle connector component
+      stat:
+        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
+      loop: "{{ oracle_jdbc_connector_components }}"
+      register: check_install_result
+
+    - name: Check that oracle jdbc connector was uninstalled
+      assert:
+        that:
+          - >-
+            check_install_result.results
+            | selectattr("stat.exists", "equalto", "true")
+            | list
+            | length == 0

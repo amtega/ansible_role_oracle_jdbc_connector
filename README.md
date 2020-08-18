@@ -8,7 +8,7 @@ A list of all the default variables for this role is available in `defaults/main
 
 The role setups the following facts:
 
-- oracle_jdbc_connector_jar_path: full path to the deployed jar with the connector.
+- `oracle_jdbc_connector_[component]_jar_path`: full path to the deployed commponent jar with the connector.
 
 ## Example Playbook
 
@@ -30,18 +30,22 @@ This is an example playbook:
 
 ## Testing
 
-Tests are based on docker containers. You can setup docker engine quickly using the playbook `files/setup.yml` available in the role [amtega.docker_engine](https://galaxy.ansible.com/amtega/docker_engine).
+Tests are based on [molecule with docker containers](https://molecule.readthedocs.io/en/latest/installation.html).
 
-To run test you need to provide a registered user/password form the Oracle web site to fill role's `oracle_jdbc_connector_user` and `oracle_jdbc_connector_password` variables. One way to provide this information is calling the testing playbook passing an additional vault inventory plus the default one provided for testing, as it's show in this example:
+To run test you need to provide a registered user/password from the Oracle web site to fill role's `oracle_jdbc_connector_user` and `oracle_jdbc_connector_password` variables. You can do it calling the tests with the following environment variables:
+
+- `ANSIBLE_INVENTORY`: path to an inventory providing the variables required by the role
+- `ANSIBLE_VAULT_PASSWORD_FILE`: path to the file containing the vault password required for the previous inventory (optional)
 
 ```shell
-$ cd amtega.oracle_jdbc_connector/tests
-$ ansible-playbook main.yml -i inventory -i ~/mycustominventory.yml --vault-id myvault@prompt
+cd amtega.oracle_jdbc_connector
+
+ANSIBLE_INVENTORY=~/myinventory ANSIBLE_VAULT_PASSWORD_FILE=~/myvaultpassword molecule test
 ```
 
 ## License
 
-Copyright (C) 2019 AMTEGA - Xunta de Galicia
+Copyright (C) 2020 AMTEGA - Xunta de Galicia
 
 This role is free software: you can redistribute it and/or modify it under the terms of:
 

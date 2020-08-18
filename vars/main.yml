@@ -1,28 +1,54 @@
 ---
 # Role variables
 
+# Artifact facts
+
+oracle_jdbc_connector_artifact_facts: >-
+  {{ ansible_local.artifact_oracle_jdbc_connector | default({}) }}
+
 # Maven settings
 
 oracle_jdbc_connector_maven_url: https://maven.oracle.com
 oracle_jdbc_connector_maven_group_id: com.oracle.jdbc
 oracle_jdbc_connector_maven_wagon_url: >-
-  {{ "http://central.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
+  {{ "https://repo1.maven.org/maven2/org/apache/maven/wagon/wagon-http/2.8/"
      + "wagon-http-2.8-shaded.jar" }}
 oracle_jdbc_connector_maven_ext_path: >-
   /usr/share/maven/lib/ext/oracle_jdbc_connector_wagon.jar
 
-# Downloaded paths
+# Connector version installed
 
-oracle_jdbc_connector_artifact_unarchive_dir: >-
-  {{ oracle_jdbc_connector_unarchive_result.dest
-     + "/"
-     + oracle_jdbc_connector_unarchive_result.files
-       | select("search", "ojdbc.\.jar")
-       | first
-       | dirname
-     if oracle_jdbc_connector_artifact is not none
-     else "" }}
+oracle_jdbc_connector_installed_version: >-
+  {{ ansible_local.oracle_jdbc_connector.version | default("0") }}
 
-oracle_jdbc_connector_artifact_path: >-
-  {{ artifact_result[oracle_jdbc_connector_artifact.id].download_path
-     | default('') }}
+# Indicate if all components are installed
+
+oracle_jdbc_connector_components_installed: >-
+  {{ oracle_jdbc_connector_components
+     is subset(oracle_jdbc_connector_search_result.files
+               | map(attribute="path")
+               | map("basename")
+               | map("splitext")
+               | map("first")
+               | list) }}
+
+# Indicate if install is required
+
+oracle_jdbc_connector_install_required: >-
+  {{ (oracle_jdbc_connector_version
+      is not version(oracle_jdbc_connector_installed_version, "==")
+      or not oracle_jdbc_connector_components_installed)
+     and oracle_jdbc_connector_state == "present" }}
+
+# List of regex expressions to identify oracle components
+
+oracle_jdbc_connector_components_regex:
+  - ojdbc[0-9]+
+  - ucp
+  - oraclepki
+  - osdt_cert
+  - osdt_core
+  - orai18n
+  - xdb6[0-9]+
+  - ons
+  - simplefan

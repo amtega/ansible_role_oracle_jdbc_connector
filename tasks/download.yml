@@ -2,72 +2,13 @@
 # Role download tasks
 
 - block:
-    - block:
-        - name: Download maven wagon required by oracle repository
-          get_url:
-            url: "{{ oracle_jdbc_connector_maven_wagon_url }}"
-            dest: "{{ oracle_jdbc_connector_maven_ext_path }}"
-          register: oracle_jdbc_connector_wagon_download_result
-
-        - name: Generate maven master encrypted password
-          shell: >-
-            mvn --encrypt-master-password {{ oracle_jdbc_connector_password }}
-          changed_when: no
-          register: oracle_jdbc_connector_maven_master_key_result
-
-        - name: Setup maven security settings file
-          template:
-            src: security-settings.xml.j2
-            dest: >-
-              {{ oracle_jdbc_connector_download_dest }}/security-settings.xml
-            mode: 0600
-
-        - name: Encrypt oracle maven repository password
-          shell: >-
-            mvn
-            -Dsettings.security={{ oracle_jdbc_connector_download_dest
-                                   + "/security-settings.xml "
-                                   + "--encrypt-password "
-                                   + oracle_jdbc_connector_password }}
-          changed_when: no
-          register: oracle_jdbc_connector_maven_repo_key_result
-
-        - name: Setup maven settings file
-          template:
-            src: settings.xml.j2
-            dest: "{{ oracle_jdbc_connector_download_dest }}/settings.xml"
-
-        - name: Setup maven project file
-          template:
-            src: pom.xml.j2
-            dest: "{{ oracle_jdbc_connector_download_dest }}/pom.xml"
-
-        - name: Download oracle jdbc connector from maven repository
-          shell: >-
-            mvn
-            -Dsettings.security={{ oracle_jdbc_connector_download_dest
-                                   + "/security-settings.xml "
-                                   + "-s "
-                                   + oracle_jdbc_connector_download_dest
-                                   + "/settings.xml compile" }}
-          args:
-            chdir: "{{ oracle_jdbc_connector_download_dest }}"
-          register: oracle_jdbc_connector_maven_compile_result
+    - include_tasks: maven.yml
       when: oracle_jdbc_connector_artifact is none
 
-    - name: Download oracle jdbc connector artifact
-      include_role:
-        name: amtega.artifact
-      vars:
-        override:
-          dest: "{{ oracle_jdbc_connector_download_dest }}"
-          download: "{{ oracle_jdbc_connector_install_required | bool }}"
-        artifact: >-
-          {{ oracle_jdbc_connector_artifact | combine(override) }}
-        artifact_http_proxy: "{{ oracle_jdbc_connector_http_proxy }}"
-        artifact_https_proxy: "{{ oracle_jdbc_connector_https_proxy }}"
-        artifact_no_proxy: "{{ oracle_jdbc_connector_no_proxy }}"
+    - include_tasks: artifact.yml
       when: oracle_jdbc_connector_artifact is not none
+      vars:
+        oracle_jdbc_connector_state: present
   when:
     - oracle_jdbc_connector_state == "present"
     - oracle_jdbc_connector_install_required | bool

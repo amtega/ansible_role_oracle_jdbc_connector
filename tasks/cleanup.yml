@@ -1,34 +1,25 @@
 ---
 # Role cleanup tasks
 
-- block:
-    - block:
-        - name: Remove maven temporary download directory
-          file:
-            path: "{{ oracle_jdbc_connector_download_dest }}/.m2"
-            state: absent
-          when: oracle_jdbc_connector_remove_artifact | bool
+- include: cleanup_maven.yml
+  when: oracle_jdbc_connector_artifact is none
 
-        - name: Remove maven wagon required by oracle repository
-          file:
-            path: "{{ oracle_jdbc_connector_maven_ext_path }}"
-            state: absent
-      when: oracle_jdbc_connector_artifact is none
+- include_tasks: artifact.yml
+  when: oracle_jdbc_connector_artifact is not none
+  vars:
+    oracle_jdbc_connector_state: absent
 
-    - block:
-        - name: Remove oracle jdbc connector unarchive directory
-          file:
-            path: "{{ oracle_jdbc_connector_artifact_unarchive_dir }}"
-            state: absent
-
-        - name: Remove oracle jdbc connector artifact
-          file:
-            path: "{{ oracle_jdbc_connector_artifact_path }}"
-            state: absent
-          when: oracle_jdbc_connector_remove_artifact | bool
-      when:
-        - oracle_jdbc_connector_artifact is not none
-        - oracle_jdbc_connector_install_required | bool
-  tags:
-    - role::oracle_jdbc_connector
-    - role::oracle_jdbc_connector::cleanup
+- name: Cleanup oracle jdbc connector components
+  file:
+    path: "{{ mysql_jdbc_connector_item }}"
+    state: absent
+  loop: >-
+    {{ oracle_jdbc_connector_search_result.files
+       | map(attribute="path")
+       | list
+       | difference(lookup('template', 'components.yml.j2')
+                    | from_yaml
+                    | map(attribute="dest")
+                    | list) }}
+  loop_control:
+    loop_var: oracle_jdbc_connector_item

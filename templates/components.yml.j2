@@ -1,0 +1,31 @@
+{%- for c in oracle_jdbc_connector_components -%}
+{%- if oracle_jdbc_connector_artifact is not none -%}
+  {%- if artifact_result.oracle_jdbc_connector.unarchived_files is defined -%}
+    {%- set src = artifact_result.oracle_jdbc_connector.unarchived_files
+                 | select("search", "ojdbc.\.jar")
+                 | first
+                 | dirname
+                 + "/"
+                 + c
+                 + ".jar" -%}
+  {%- else -%}
+    {%- set src = "" -%}
+  {%- endif -%}
+{%- else -%}
+  {%- set src = oracle_jdbc_connector_download_dest
+               + "/.m2/com/oracle/jdbc/"
+               + c
+               + "/"
+               + oracle_jdbc_connector_version
+               + "/"
+               + c
+               + "-"
+               + oracle_jdbc_connector_version
+               + ".jar" -%}
+{%- endif -%}
+- src: "{{ src }}"
+  dest: "{{ oracle_jdbc_connector_dir }}/{{ c }}.jar"
+{{ "\n" }}
+{%- else -%}
+[]
+{%- endfor -%}

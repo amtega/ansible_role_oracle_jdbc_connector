@@ -1,0 +1,58 @@
+---
+# Role maven download tasks
+
+- block:
+    - name: Download maven wagon required by oracle repository
+      get_url:
+        url: "{{ oracle_jdbc_connector_maven_wagon_url }}"
+        dest: "{{ oracle_jdbc_connector_maven_ext_path }}"
+      register: oracle_jdbc_connector_wagon_download_result
+
+    - name: Generate maven master encrypted password
+      command: >-
+        mvn --encrypt-master-password {{ oracle_jdbc_connector_password }}
+      changed_when: no
+      register: oracle_jdbc_connector_maven_master_key_result
+
+    - name: Setup maven security settings file
+      template:
+        src: security-settings.xml.j2
+        dest: >-
+          {{ oracle_jdbc_connector_download_dest }}/security-settings.xml
+        mode: 0600
+
+    - name: Encrypt oracle maven repository password
+      command: >-
+        mvn
+        -Dsettings.security={{ oracle_jdbc_connector_download_dest
+                               + "/security-settings.xml "
+                               + "--encrypt-password "
+                               + oracle_jdbc_connector_password }}
+      changed_when: no
+      register: oracle_jdbc_connector_maven_repo_key_result
+
+    - name: Setup maven settings file
+      template:
+        src: settings.xml.j2
+        dest: "{{ oracle_jdbc_connector_download_dest }}/settings.xml"
+
+    - name: Setup maven project file
+      template:
+        src: pom.xml.j2
+        dest: "{{ oracle_jdbc_connector_download_dest }}/pom.xml"
+
+    - name: Download oracle jdbc connector from maven repository
+      command: >-
+        mvn
+        -Dsettings.security={{ oracle_jdbc_connector_download_dest
+                               + "/security-settings.xml "
+                               + "-s "
+                               + oracle_jdbc_connector_download_dest
+                               + "/settings.xml compile" }}
+      args:
+        chdir: "{{ oracle_jdbc_connector_download_dest }}"
+      register: oracle_jdbc_connector_maven_compile_result
+  environment: "{{ proxy_client_environment }}"
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::download

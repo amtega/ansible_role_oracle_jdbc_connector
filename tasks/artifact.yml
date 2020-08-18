@@ -1,0 +1,24 @@
+---
+# Role artifact tasks
+
+- block:
+    - name: Download oracle jdbc connector artifact
+      include_role:
+        name: amtega.artifact
+      vars:
+        override:
+          id: oracle_jdbc_connector
+          dest: "{{ oracle_jdbc_connector_download_dest }}"
+          download: "{{ oracle_jdbc_connector_install_required | bool }}"
+          version: "{{ oracle_jdbc_connector_version }}"
+          unarchive: yes
+          state: "{{ oracle_jdbc_connector_state }}"
+        artifact: >-
+          {{ oracle_jdbc_connector_artifact | combine(override) }}
+        artifact_http_proxy: "{{ oracle_jdbc_connector_http_proxy }}"
+        artifact_https_proxy: "{{ oracle_jdbc_connector_https_proxy }}"
+        artifact_no_proxy: "{{ oracle_jdbc_connector_no_proxy }}"
+  environment: "{{ proxy_client_environment }}"
+  tags:
+    - role::oracle_jdbc_connector
+    - role::oracle_jdbc_connector::download

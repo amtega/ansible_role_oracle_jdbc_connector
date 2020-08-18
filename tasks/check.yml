@@ -9,5 +9,4 @@
             or (oracle_jdbc_connector_user is not none
                 and oracle_jdbc_connector_password is not none)
   tags:
-    - role::oracle_jdbc_connector
     - role::oracle_jdbc_connector::check

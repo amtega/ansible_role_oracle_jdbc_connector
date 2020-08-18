@@ -27,7 +27,11 @@ dependencies:
       check_platform_distributions:
         centos: 7
         fedora: 29
-        rhel: 7
+        redhat: 7
+
+  - role: amtega.proxy_client
+    vars:
+      proxy_client_permanent: no
 
   - role: amtega.epel
     when: oracle_jdbc_connector_artifact is none
