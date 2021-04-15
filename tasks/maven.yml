@@ -35,11 +35,13 @@
       template:
         src: settings.xml.j2
         dest: "{{ oracle_jdbc_connector_download_dest }}/settings.xml"
+        mode: 0755
 
     - name: Setup maven project file
       template:
         src: pom.xml.j2
         dest: "{{ oracle_jdbc_connector_download_dest }}/pom.xml"
+        mode: 0755
 
     - name: Download oracle jdbc connector from maven repository
       command: >-
