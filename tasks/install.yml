@@ -8,12 +8,14 @@
       file:
         path: "{{ oracle_jdbc_connector_dir }}"
         state: directory
+        mode: 0755
 
     - name: Install oracle jdbc connector component
       copy:
         src: "{{ oracle_jdbc_connector_item.src }}"
         dest: "{{ oracle_jdbc_connector_item.dest }}"
         remote_src: yes
+        mode: 0755
       register: oracle_jdbc_connector_install_result
       loop: "{{ lookup('template', 'components.yml.j2') | from_yaml }}"
       loop_control:
