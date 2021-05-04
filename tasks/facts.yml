@@ -23,7 +23,7 @@
             dest: /etc/ansible/facts.d/oracle_jdbc_connector.fact
             mode: 0640
 
-    - when: oracle_jdbc_connector_state == "present"
+    - when: oracle_jdbc_connector_state == "absent"
       name: Remove oracle jdbc connector local fact
       file:
         path: /etc/ansible/facts.d/oracle_jdbc_connector.fact
