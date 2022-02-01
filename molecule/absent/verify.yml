@@ -6,7 +6,7 @@
   tasks:
     - name: Check oracle connector component
       stat:
-        path: "{{ oracle_jdbc_connector_dir}}/{{ item }}.jar"
+        path: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
       loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
@@ -18,3 +18,7 @@
             | selectattr("stat.exists", "equalto", "true")
             | list
             | length == 0
+  vars:
+    ansible_python_interpreter: >-
+      {{ (inventory_hostname in groups.molecule_hosts_centos_7)
+         | ternary("/usr/bin/python", "/usr/bin/python3") }}

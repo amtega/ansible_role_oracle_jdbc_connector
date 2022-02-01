@@ -7,3 +7,7 @@
     - role: amtega.oracle_jdbc_connector
       vars:
         oracle_jdbc_connector_state: present
+  vars:
+    ansible_python_interpreter: >-
+      {{ (inventory_hostname in groups.molecule_hosts_centos_7)
+         | ternary("/usr/bin/python", "/usr/bin/python3") }}
