@@ -1,7 +1,7 @@
 ---
-# Role tasks
 
-- block:
+- name: Setup oracle jdbc connector
+  block:
     - include_tasks: search.yml
 
     - include_tasks: check.yml

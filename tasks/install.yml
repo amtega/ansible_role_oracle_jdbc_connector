@@ -1,17 +1,17 @@
 ---
-# Role install tasks
 
-- block:
+- name: Install oracle jdbc connector
+  block:
     - include_tasks: download.yml
 
     - name: Create oracle jdbc connector destination directory
-      file:
+      ansible.builtin.file:
         path: "{{ oracle_jdbc_connector_dir }}"
         state: directory
         mode: 0755
 
     - name: Install oracle jdbc connector component
-      copy:
+      ansible.builtin.copy:
         src: "{{ oracle_jdbc_connector_item.src }}"
         dest: "{{ oracle_jdbc_connector_item.dest }}"
         remote_src: yes
