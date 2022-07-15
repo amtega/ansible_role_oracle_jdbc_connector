@@ -10,7 +10,7 @@
     oracle_jdbc_connector_state: absent
 
 - name: Cleanup oracle jdbc connector components
-  file:
+  ansible.builtin.file:
     path: "{{ mysql_jdbc_connector_item }}"
     state: absent
   loop: >-

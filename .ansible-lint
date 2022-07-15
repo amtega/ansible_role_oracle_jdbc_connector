@@ -1,5 +1,7 @@
 ---
 
 exclude_paths:
-  - meta
-  - tasks/artifact.yml
+  - .cz.yaml
+
+kinds:
+  - yaml: "**/molecule/**/requirements.yml"
