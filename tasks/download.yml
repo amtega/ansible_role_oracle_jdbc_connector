@@ -1,7 +1,8 @@
 ---
 # Role download tasks
 
-- block:
+- name: Download oracle jdbc connector artifact
+  block:
     - include_tasks: maven.yml
       when: oracle_jdbc_connector_artifact is none
 

@@ -2,7 +2,7 @@
 # Search installed connectors tasks
 
 - name: Search installed oracle jdbc connectors
-  find:
+  ansible.builtin.find:
     paths: "{{ oracle_jdbc_connector_dir }}"
     file_type: file
     patterns: "{{ oracle_jdbc_connector_components_regex }}"

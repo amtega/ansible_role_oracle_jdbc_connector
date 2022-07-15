@@ -2,7 +2,7 @@
 # Role uninstall tasks
 
 - name: Uninstall oracle jdbc connector
-  file:
+  ansible.builtin.file:
     path: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
     state: absent
   loop: "{{ oracle_jdbc_connector_components }}"

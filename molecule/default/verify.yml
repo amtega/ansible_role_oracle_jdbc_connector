@@ -5,13 +5,13 @@
   gather_facts: no
   tasks:
     - name: Check oracle connector component
-      stat:
+      ansible.builtin.stat:
         path: "{{ oracle_jdbc_connector_dir }}/{{ item }}.jar"
       loop: "{{ oracle_jdbc_connector_components }}"
       register: check_install_result
 
     - name: Check that oracle jdbc connector was installed
-      assert:
+      ansible.builtin.assert:
         that:
           - >-
             check_install_result.results

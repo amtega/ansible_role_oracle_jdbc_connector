@@ -2,11 +2,11 @@
 # Role cleanup maven tasks
 
 - name: Remove maven temporary download directory
-  file:
+  ansible.builtin.file:
     path: "{{ oracle_jdbc_connector_download_dest }}/.m2"
     state: absent
 
 - name: Remove maven wagon required by oracle repository
-  file:
+  ansible.builtin.file:
     path: "{{ oracle_jdbc_connector_maven_ext_path }}"
     state: absent

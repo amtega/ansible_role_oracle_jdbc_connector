@@ -1,28 +1,29 @@
 ---
-# Role maven download tasks
 
-- block:
+- name: Download oracle jdbc connector from maven
+  block:
     - name: Download maven wagon required by oracle repository
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ oracle_jdbc_connector_maven_wagon_url }}"
         dest: "{{ oracle_jdbc_connector_maven_ext_path }}"
+        mode: 0640
       register: oracle_jdbc_connector_wagon_download_result
 
     - name: Generate maven master encrypted password
-      command: >-
+      ansible.builtin.command: >-
         mvn --encrypt-master-password {{ oracle_jdbc_connector_password }}
       changed_when: no
       register: oracle_jdbc_connector_maven_master_key_result
 
     - name: Setup maven security settings file
-      template:
+      ansible.builtin.template:
         src: security-settings.xml.j2
         dest: >-
           {{ oracle_jdbc_connector_download_dest }}/security-settings.xml
         mode: 0600
 
     - name: Encrypt oracle maven repository password
-      command: >-
+      ansible.builtin.command: >-
         mvn
         -Dsettings.security={{ oracle_jdbc_connector_download_dest
                                + "/security-settings.xml "
@@ -32,19 +33,19 @@
       register: oracle_jdbc_connector_maven_repo_key_result
 
     - name: Setup maven settings file
-      template:
+      ansible.builtin.template:
         src: settings.xml.j2
         dest: "{{ oracle_jdbc_connector_download_dest }}/settings.xml"
         mode: 0755
 
     - name: Setup maven project file
-      template:
+      ansible.builtin.template:
         src: pom.xml.j2
         dest: "{{ oracle_jdbc_connector_download_dest }}/pom.xml"
         mode: 0755
 
     - name: Download oracle jdbc connector from maven repository
-      command: >-
+      ansible.builtin.command: >-
         mvn
         -Dsettings.security={{ oracle_jdbc_connector_download_dest
                                + "/security-settings.xml "
@@ -53,6 +54,7 @@
                                + "/settings.xml compile" }}
       args:
         chdir: "{{ oracle_jdbc_connector_download_dest }}"
+      when: yes
       register: oracle_jdbc_connector_maven_compile_result
   environment: "{{ proxy_client_environment }}"
   tags:

@@ -1,9 +1,9 @@
 ---
-# Role artifact tasks
 
-- block:
+- name: Setup oracle jdbc connector artifact
+  block:
     - name: Download oracle jdbc connector artifact
-      include_role:
+      ansible.builtin.include_role:
         name: amtega.artifact
       vars:
         override:
