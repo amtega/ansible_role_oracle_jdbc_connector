@@ -1,5 +1,4 @@
 ---
-# Search installed connectors tasks
 
 - name: Search installed oracle jdbc connectors
   ansible.builtin.find:

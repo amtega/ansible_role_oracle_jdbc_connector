@@ -1,5 +1,4 @@
 ---
-# Role uninstall tasks
 
 - name: Uninstall oracle jdbc connector
   ansible.builtin.file:

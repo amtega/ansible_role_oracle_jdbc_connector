@@ -1,12 +1,13 @@
 ---
-# Role download tasks
 
 - name: Download oracle jdbc connector artifact
   block:
-    - include_tasks: maven.yml
+    - name: Download oracle jdbc connector maven artifact
+      ansible.builtin.include_tasks: maven.yml
       when: oracle_jdbc_connector_artifact is none
 
-    - include_tasks: artifact.yml
+    - name: Download oracle jdbc connector artifact
+      ansible.builtin.include_tasks: artifact.yml
       when: oracle_jdbc_connector_artifact is not none
       vars:
         oracle_jdbc_connector_state: present
