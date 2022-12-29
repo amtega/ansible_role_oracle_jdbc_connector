@@ -1,10 +1,11 @@
 ---
-# Role cleanup tasks
 
-- include: cleanup_maven.yml
+- name: Cleanup oracle jdbc connector maven stuff
+  ansible.builtin.include_tasks: cleanup_maven.yml
   when: oracle_jdbc_connector_artifact is none
 
-- include_tasks: artifact.yml
+- name: Cleanup oracle jdbc connector artifact
+  ansible.builtin.include_tasks: artifact.yml
   when: oracle_jdbc_connector_artifact is not none
   vars:
     oracle_jdbc_connector_state: absent

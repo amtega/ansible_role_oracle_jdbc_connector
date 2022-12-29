@@ -2,27 +2,27 @@
 
 - name: Setup oracle jdbc connector
   block:
-    - include_tasks: search.yml
+    - ansible.builtin.include_tasks: search.yml
 
-    - include_tasks: check.yml
+    - ansible.builtin.include_tasks: check.yml
 
-    - include_tasks: install.yml
+    - ansible.builtin.include_tasks: install.yml
       when:
         - oracle_jdbc_connector_state == "present"
         - oracle_jdbc_connector_install_required | bool
       tags:
         - role::oracle_jdbc_connector::install
 
-    - include_tasks: uninstall.yml
+    - ansible.builtin.include_tasks: uninstall.yml
       when: oracle_jdbc_connector_state == "absent"
       tags:
         - role::oracle_jdbc_connector::uninstall
 
-    - include_tasks: cleanup.yml
+    - ansible.builtin.include_tasks: cleanup.yml
       tags:
         - role::oracle_jdbc_connector::cleanup
 
-    - include_tasks: facts.yml
+    - ansible.builtin.include_tasks: facts.yml
       tags:
         - role::oracle_jdbc_connector::facts
   tags:
