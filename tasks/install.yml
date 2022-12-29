@@ -2,7 +2,8 @@
 
 - name: Install oracle jdbc connector
   block:
-    - include_tasks: download.yml
+    - name: Download oracle jdbc connector
+      ansible.builtin.include_tasks: download.yml
 
     - name: Create oracle jdbc connector destination directory
       ansible.builtin.file:

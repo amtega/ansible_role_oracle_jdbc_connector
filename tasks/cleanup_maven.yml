@@ -1,5 +1,4 @@
 ---
-# Role cleanup maven tasks
 
 - name: Remove maven temporary download directory
   ansible.builtin.file:

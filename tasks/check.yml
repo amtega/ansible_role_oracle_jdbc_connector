@@ -1,5 +1,4 @@
 ---
-# Role check tasks
 
 - name: Assert download config is valid
   ansible.builtin.assert:
